@@ -1,5 +1,5 @@
 [package]
-name = "MerkleSearchTrees"
+name = "merkle_search_trees"
 version = "0.1.0"
 edition = "2021"
 
