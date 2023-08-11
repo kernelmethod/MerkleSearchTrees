@@ -10,14 +10,14 @@ pub struct MSTBuilder<H: HashFunction> {
 
 impl<H: HashFunction> MSTBuilder<H> {
     /// Contsruct a new [`MSTBuilder`] instance.
-    fn new() -> Self {
+    pub fn new() -> Self {
         MSTBuilder {
             hashfn: PhantomData,
         }
     }
 
     /// Finalize the builder and construct a new [`MerkleSearchTree`] from it.
-    fn build(&self) -> MerkleSearchTree<H> {
+    pub fn build(&self) -> MerkleSearchTree<H> {
         MerkleSearchTree::<H>::new()
     }
 }

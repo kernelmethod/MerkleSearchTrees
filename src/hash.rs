@@ -11,11 +11,11 @@ pub trait HashFunction {
 pub trait Hasher {
     type Hash;
 
-    fn update(&mut self, input: &[u8]);
+    fn update(&mut self, input: &[u8]) -> &mut Self;
     fn finalize(&self) -> Self::Hash;
 }
 
-/// Default hash function implementation for this crate. This struct wraps [`blake3`]
+/// Default hash function implementation for this crate. This type wraps [`blake3`]
 /// under the hood.
 pub struct DefaultHash;
 
@@ -35,8 +35,8 @@ impl HashFunction for DefaultHash {
 impl Hasher for blake3::Hasher {
     type Hash = blake3::Hash;
 
-    fn update(&mut self, input: &[u8]) {
-        self.update(input);
+    fn update(&mut self, input: &[u8]) -> &mut Self {
+        self.update(input)
     }
 
     fn finalize(&self) -> Self::Hash {
@@ -51,10 +51,9 @@ mod test {
     #[test]
     pub fn test_defaulthash() {
         let hash1 = DefaultHash::hash(b"hello, world");
-
-        let mut hasher = DefaultHash::hasher();
-        hasher.update(b"hello, world");
-        let hash2 = hasher.finalize();
+        let hash2 = DefaultHash::hasher()
+            .update(b"hello, world")
+            .finalize();
 
         assert_eq!(hash1, hash2);
     }
