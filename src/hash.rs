@@ -55,9 +55,7 @@ mod test {
     #[test]
     pub fn test_defaulthash() {
         let hash1 = DefaultHash::hash(b"hello, world");
-        let hash2 = DefaultHash::hasher()
-            .update(b"hello, world")
-            .finalize();
+        let hash2 = DefaultHash::hasher().update(b"hello, world").finalize();
 
         assert_eq!(hash1, hash2);
     }
