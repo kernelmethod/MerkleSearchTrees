@@ -1,0 +1,59 @@
+/// Trait for hash functions that can be used by [`MerkleSearchTree`].
+pub trait HashFunction {
+    type Hash;
+
+    fn hash(input: &[u8]) -> Self::Hash;
+    fn hasher() -> Box<dyn Hasher<Hash = Self::Hash>>;
+}
+
+/// Trait for hashing objects with incrementally updatable state.
+pub trait Hasher {
+    type Hash;
+
+    fn update(&mut self, input: &[u8]);
+    fn finalize(&self) -> Self::Hash;
+}
+
+/// Default hash function implementation for this crate. This struct wraps [`blake3`]
+/// under the hood.
+pub struct DefaultHash;
+
+impl HashFunction for DefaultHash {
+    type Hash = blake3::Hash;
+
+    fn hash(input: &[u8]) -> Self::Hash {
+        blake3::hash(input)
+    }
+
+    fn hasher() -> Box<dyn Hasher<Hash = Self::Hash>> {
+        Box::new(blake3::Hasher::new())
+    }
+}
+
+impl Hasher for blake3::Hasher {
+    type Hash = blake3::Hash;
+
+    fn update(&mut self, input: &[u8]) {
+        self.update(input);
+    }
+
+    fn finalize(&self) -> Self::Hash {
+        self.finalize()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    pub fn test_defaulthash() {
+        let hash1 = DefaultHash::hash(b"hello, world");
+
+        let mut hasher = DefaultHash::hasher();
+        hasher.update(b"hello, world");
+        let hash2 = hasher.finalize();
+
+        assert_eq!(hash1, hash2);
+    }
+}
