@@ -9,9 +9,13 @@ pub trait HashFunction {
 
 /// Trait for hashing objects with incrementally updatable state.
 pub trait Hasher {
+    /// Associated type for the type of hash produced by this hash function.
     type Hash;
 
+    /// Add input bytes to the internal state of the [`Hasher`] instance.
     fn update(&mut self, input: &[u8]) -> &mut Self;
+
+    /// Finalize the hash state and return the [Self::Hash](`Hash`) of the input.
     fn finalize(&self) -> Self::Hash;
 }
 

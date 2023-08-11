@@ -16,6 +16,16 @@ impl<H: HashFunction> MSTBuilder<H> {
         }
     }
 
+    /// Change the type of hash function that will be used by the constructed
+    /// [`MerkleSearchTree`].
+    pub fn with_hash<H2>(&self) -> MSTBuilder<H2>
+        where H2: HashFunction
+    {
+        MSTBuilder::<H2> {
+            hashfn: PhantomData,
+        }
+    }
+
     /// Finalize the builder and construct a new [`MerkleSearchTree`] from it.
     pub fn build(&self) -> MerkleSearchTree<H> {
         MerkleSearchTree::<H>::new()
@@ -32,6 +42,8 @@ mod test {
 
     #[test]
     fn test_construct_tree_with_builder() {
-        let _tree = builder().build();
+        let _tree = builder()
+            .with_hash::<DefaultHash>()
+            .build();
     }
 }
