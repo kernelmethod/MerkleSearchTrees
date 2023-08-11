@@ -1,9 +1,10 @@
 /// Trait for hash functions that can be used by [`MerkleSearchTree`].
 pub trait HashFunction {
     type Hash;
+    type Hasher: Hasher<Hash = Self::Hash>;
 
     fn hash(input: &[u8]) -> Self::Hash;
-    fn hasher() -> Box<dyn Hasher<Hash = Self::Hash>>;
+    fn hasher() -> Self::Hasher;
 }
 
 /// Trait for hashing objects with incrementally updatable state.
@@ -20,13 +21,14 @@ pub struct DefaultHash;
 
 impl HashFunction for DefaultHash {
     type Hash = blake3::Hash;
+    type Hasher = blake3::Hasher;
 
     fn hash(input: &[u8]) -> Self::Hash {
         blake3::hash(input)
     }
 
-    fn hasher() -> Box<dyn Hasher<Hash = Self::Hash>> {
-        Box::new(blake3::Hasher::new())
+    fn hasher() -> Self::Hasher {
+        blake3::Hasher::new()
     }
 }
 
